@@ -4,86 +4,96 @@ import {
   TextInput,
   Button,
   Group,
-  Badge,
   Stack,
   Select,
+  PillsInput,
+  Pill,
+  CloseButton,
   Text,
 } from '@mantine/core';
-import { IconPlus, IconX } from '@tabler/icons-react';
-import { useState } from 'react';
+import { IconPlus } from '@tabler/icons-react';
 import classes from './Sidebar.module.scss';
+import { useAppDispatch, useAppSelector } from '../../store';
+import {
+  setAreaId,
+  removeAvailableSkill,
+  setNewSkill,
+  commitNewSkill,
+} from '../../store/filtersSlice';
 
 export function Sidebar() {
-  const [skills, setSkills] = useState<string[]>([
-    'TypeScript',
-    'React',
-    'Redux',
-  ]);
-  const [newSkill, setNewSkill] = useState('');
+  const dispatch = useAppDispatch();
+  const { availableSkills, newSkill, areaId } = useAppSelector(s => s.filters);
 
   const addSkill = () => {
-    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      setSkills([...skills, newSkill.trim()]);
-      setNewSkill('');
-    }
+    dispatch(commitNewSkill());
   };
 
-  const removeSkill = (skillToRemove: string) => {
-    setSkills(skills.filter(skill => skill !== skillToRemove));
+  const removeSkillCompletely = (skillToRemove: string) => {
+    dispatch(removeAvailableSkill(skillToRemove));
   };
 
   return (
     <div className={classes.sidebar}>
       <Stack gap="md">
-        <Paper shadow="xs" p="md" radius="md" className={classes.filterCard}>
-          <Text className={classes.title}>Ключевые навыки</Text>
+        <Paper p="md" radius="md" className={classes.filterCard}>
+          <Title order={3} size="h4" mb="md" className={classes.title}>
+            Ключевые навыки
+          </Title>
 
           <Group gap="xs" mb="md">
             <TextInput
               placeholder="Навык"
               value={newSkill}
-              onChange={e => setNewSkill(e.target.value)}
-              onKeyPress={e => e.key === 'Enter' && addSkill()}
+              radius={10}
+              onChange={e => dispatch(setNewSkill(e.target.value))}
+              onKeyDown={e => e.key === 'Enter' && addSkill()}
               className={classes.skillInput}
             />
-            <Button
-              size="sm"
-              color="blue"
-              onClick={addSkill}
-              className={classes.addButton}
-            >
-              <IconPlus size={16} />
+            <Button variant="filled" color="#228BE6" onClick={addSkill}>
+              <IconPlus size={26} />
             </Button>
           </Group>
 
-          <div className={classes.skillsContainer}>
-            {skills.map(skill => (
-              <Badge
-                key={skill}
-                variant="light"
-                color="gray"
-                size="md"
-                className={classes.skillBadge}
-                rightSection={
-                  <IconX
-                    size={12}
-                    className={classes.removeIcon}
-                    onClick={() => removeSkill(skill)}
-                  />
-                }
-              >
-                {skill}
-              </Badge>
-            ))}
-          </div>
+          <PillsInput variant="unstyled">
+            <Pill.Group>
+              {availableSkills.map(skill => {
+                return (
+                  <Pill
+                    key={skill}
+                    size="sm"
+                    variant="default"
+                    className={classes.skillBadge}
+                  >
+                    <Text className={classes.pillContent}>{skill}</Text>
+                    <CloseButton
+                      size="sm"
+                      className={classes.pillRemove}
+                      onClick={e => {
+                        e.stopPropagation();
+                        removeSkillCompletely(skill);
+                      }}
+                      aria-label={`Remove ${skill}`}
+                    />
+                  </Pill>
+                );
+              })}
+            </Pill.Group>
+          </PillsInput>
         </Paper>
 
-        <Paper shadow="xs" p="md" radius="md" className={classes.filterCard}>
+        <Paper p="md" radius="md" className={classes.filterCard}>
           <Select
             placeholder="Все города"
-            data={['Москва', 'Санкт-Петербург']}
-            searchable
+            data={[
+              { value: '1', label: 'Москва' },
+              { value: '2', label: 'Санкт-Петербург' },
+            ]}
+            value={areaId}
+            onChange={val => dispatch(setAreaId(val ?? ''))}
+            searchable={false}
             clearable
+            radius={10}
             className={classes.citySelect}
           />
         </Paper>

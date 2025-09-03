@@ -10,7 +10,7 @@ function App() {
     <div className={classes.app}>
       <Header />
       <SearchHeader />
-
+      
       <Container size="xl" py="xl">
         <Group gap="xl" align="flex-start">
           <Sidebar />

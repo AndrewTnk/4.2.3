@@ -8,6 +8,7 @@ interface VacancyCardProps {
   company: string;
   location: string;
   remoteType?: 'remote' | 'hybrid' | 'office';
+  hhUrl: string;
 }
 
 export function VacancyCard({
@@ -17,19 +18,27 @@ export function VacancyCard({
   company,
   location,
   remoteType,
+  hhUrl,
 }: VacancyCardProps) {
   const getRemoteBadge = () => {
     if (remoteType === 'remote') {
       return (
-        <Badge color="blue" variant="light">
+        <Badge color="blue" variant="deffault">
           МОЖНО УДАЛЕННО
         </Badge>
       );
     }
     if (remoteType === 'hybrid') {
       return (
-        <Badge color="dark" variant="light">
+        <Badge color="dark" variant="deffault">
           ГИБРИД
+        </Badge>
+      );
+    }
+    if (remoteType === 'office') {
+      return (
+        <Badge color="gray" variant="light">
+          ОФИС
         </Badge>
       );
     }
@@ -37,12 +46,11 @@ export function VacancyCard({
   };
 
   return (
-    <Paper shadow="xs" p="lg" radius="md" className={classes.card}>
-      <Stack gap="md">
+    <Paper p="lg" radius="md" className={classes.card}>
+      <Stack gap="sm">
         <Title order={3} size="h4" className={classes.title}>
           {title}
         </Title>
-
         <Group>
           <Text size="lg" fw={600} className={classes.salary}>
             {salary} Р
@@ -52,17 +60,15 @@ export function VacancyCard({
             {experience}
           </Text>
         </Group>
-
-        <Text size="md" fw={400} c="dimmed">
+        <Text size="md" fw={500} c="dimmed" mt="sm">
           {company}
         </Text>
 
         {getRemoteBadge()}
-        <Text size="md" fw={500}>
-          {location}
-        </Text>
 
-        <Group gap="md" mt="md">
+        <Text size="lg">{location}</Text>
+
+        <Group gap="md" mt="sm">
           <Button
             variant="filled"
             color="dark"
@@ -71,7 +77,16 @@ export function VacancyCard({
           >
             Смотреть вакансию
           </Button>
-          <Button variant="filled" size="md" className={classes.applyButton}>
+          <Button
+            component="a"
+            href={hhUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="filled"
+            color="gray"
+            size="md"
+            className={classes.applyButton}
+          >
             Откликнуться
           </Button>
         </Group>
