@@ -10,28 +10,24 @@ import { useEffect } from 'react';
 import { VacancyCard } from '../VacancyCard/VacancyCard';
 import classes from './VacancyList.module.scss';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { fetchVacancies, setPage } from '../../store/vacanciesSlice';
+import { setPage } from '../../store/vacanciesSlice';
+import { useGetVacanciesQuery } from '../../store/api';
 
 export function VacancyList() {
   const dispatch = useAppDispatch();
   const { selectedSkills, areaId, searchQuery } = useAppSelector(
     s => s.filters
   );
-  const { items, page, perPage, totalPages, loading, error } = useAppSelector(
-    s => s.vacancies
-  );
+  const { page, perPage } = useAppSelector(s => s.vacancies);
+  const { data, isLoading, isError } = useGetVacanciesQuery({
+    selectedSkills,
+    areaId,
+    searchQuery,
+    page,
+    perPage,
+  });
 
-  useEffect(() => {
-    dispatch(
-      fetchVacancies({
-        selectedSkills,
-        areaId,
-        searchQuery,
-        page,
-        perPage,
-      })
-    );
-  }, [dispatch, selectedSkills, areaId, searchQuery, page, perPage]);
+  useEffect(() => {}, [dispatch]);
 
   const formatSalary = (s: any) => {
     if (!s) return 'З/п не указана';
@@ -56,21 +52,21 @@ export function VacancyList() {
   return (
     <div className={classes.container}>
       <Stack gap="md">
-        {loading && (
+        {isLoading && (
           <Center my="xl">
             <Loader />
           </Center>
         )}
 
-        {error && !loading && (
+        {isError && !isLoading && (
           <Center my="xl">
-            <Text c="red">{error}</Text>
+            <Text c="red">Ошибка загрузки</Text>
           </Center>
         )}
 
-        {!loading &&
-          !error &&
-          items.map((vacancy, index) => (
+        {!isLoading &&
+          !isError &&
+          (data?.items ?? []).map((vacancy, index) => (
             <div key={vacancy.id}>
               <VacancyCard
                 title={vacancy.name}
@@ -81,13 +77,15 @@ export function VacancyList() {
                 remoteType={mapRemoteType(vacancy.schedule?.id)}
                 hhUrl={vacancy.alternate_url ?? 'https://hh.ru/'}
               />
-              {index < items.length - 1 && <Divider my="md" color="#e9ecef" />}
+              {index < (data?.items?.length ?? 0) - 1 && (
+                <Divider my="md" color="#e9ecef" />
+              )}
             </div>
           ))}
 
         <Center mt="lg">
           <Pagination
-            total={10}
+            total={data?.totalPages ?? 10}
             siblings={1}
             value={page}
             color="gray"

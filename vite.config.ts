@@ -3,12 +3,14 @@ import react from '@vitejs/plugin-react';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/4.2.3/',
   plugins: [react()],
   css: {
     modules: {
       localsConvention: 'camelCase',
     },
   },
+  // @ts-ignore - vitest config is supported at runtime
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/setupTests.ts'],

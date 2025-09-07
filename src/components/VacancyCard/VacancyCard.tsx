@@ -53,7 +53,7 @@ export function VacancyCard({
         </Title>
         <Group>
           <Text size="lg" fw={600} className={classes.salary}>
-            {salary} Р
+            {salary}
           </Text>
 
           <Text size="md" c="dimmed">

@@ -6,6 +6,7 @@ import {
   TextInput,
   Button,
 } from '@mantine/core';
+import { IconSearch } from '@tabler/icons-react';
 import classes from './SearchHeader.module.scss';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { commitSearch, setSearchInput } from '../../store/filtersSlice';
@@ -37,6 +38,7 @@ export function SearchHeader() {
               onKeyDown={e => {
                 if (e.key === 'Enter') dispatch(commitSearch());
               }}
+              leftSection={<IconSearch size={18} stroke={1.8} />}
             />
             <Button
               size="md"

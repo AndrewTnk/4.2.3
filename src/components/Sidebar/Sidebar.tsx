@@ -20,6 +20,7 @@ import {
   setNewSkill,
   commitNewSkill,
 } from '../../store/filtersSlice';
+import map from '../../assets/map.svg';
 
 export function Sidebar() {
   const dispatch = useAppDispatch();
@@ -95,6 +96,7 @@ export function Sidebar() {
             clearable
             radius={10}
             className={classes.citySelect}
+            leftSection={<img src={map} />}
           />
         </Paper>
       </Stack>
