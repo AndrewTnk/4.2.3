@@ -1,7 +1,9 @@
 import { Paper, Title, Text, Group, Button, Badge, Stack } from '@mantine/core';
+import { Link, useNavigate } from 'react-router-dom';
 import classes from './VacancyCard.module.scss';
 
 interface VacancyCardProps {
+  id: string;
   title: string;
   salary: string;
   experience: string;
@@ -12,6 +14,7 @@ interface VacancyCardProps {
 }
 
 export function VacancyCard({
+  id,
   title,
   salary,
   experience,
@@ -20,6 +23,11 @@ export function VacancyCard({
   remoteType,
   hhUrl,
 }: VacancyCardProps) {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/vacancies/${id}`);
+  };
   const getRemoteBadge = () => {
     if (remoteType === 'remote') {
       return (
@@ -46,7 +54,13 @@ export function VacancyCard({
   };
 
   return (
-    <Paper p="lg" radius="md" className={classes.card}>
+    <Paper 
+      p="lg" 
+      radius="md" 
+      className={classes.card}
+      onClick={handleCardClick}
+      style={{ cursor: 'pointer' }}
+    >
       <Stack gap="sm">
         <Title order={3} size="h4" className={classes.title}>
           {title}
@@ -70,10 +84,13 @@ export function VacancyCard({
 
         <Group gap="md" mt="sm">
           <Button
+            component={Link}
+            to={`/vacancies/${id}`}
             variant="filled"
             color="dark"
             size="md"
             className={classes.viewButton}
+            onClick={(e) => e.stopPropagation()}
           >
             Смотреть вакансию
           </Button>
@@ -86,6 +103,7 @@ export function VacancyCard({
             color="gray"
             size="md"
             className={classes.applyButton}
+            onClick={(e) => e.stopPropagation()}
           >
             Откликнуться
           </Button>

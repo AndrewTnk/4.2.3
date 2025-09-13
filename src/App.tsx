@@ -1,16 +1,16 @@
 import { Container, Group } from '@mantine/core';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Header } from './components/Header/Header';
 import { SearchHeader } from './components/SearchHeader/SearchHeader';
 import { Sidebar } from './components/Sidebar/Sidebar';
 import { VacancyList } from './components/VacancyList/VacancyList';
+import { VacancyDetail } from './components/VacancyDetail/VacancyDetail';
 import classes from './App.module.scss';
 
-function App() {
+function VacanciesPage() {
   return (
-    <div className={classes.app}>
-      <Header />
+    <>
       <SearchHeader />
-      
       <Container size="xl" py="xl">
         <Group gap="xl" align="flex-start">
           <Sidebar />
@@ -19,7 +19,22 @@ function App() {
           </div>
         </Group>
       </Container>
-    </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <div className={classes.app}>
+        <Header />
+        <Routes>
+          <Route path="/" element={<VacanciesPage />} />
+          <Route path="/vacancies" element={<VacanciesPage />} />
+          <Route path="/vacancies/:id" element={<VacancyDetail />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

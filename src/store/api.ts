@@ -17,6 +17,15 @@ export interface HhVacancyItem {
   alternate_url?: string;
 }
 
+export interface HhVacancyDetail extends HhVacancyItem {
+  snippet?: {
+    requirement?: string;
+    responsibility?: string;
+  };
+  description?: string;
+  url?: string;
+}
+
 export interface FetchParams {
   selectedSkills: string[];
   areaId: string;
@@ -59,9 +68,23 @@ export const api = createApi({
         } as VacanciesResponse;
       },
     }),
+    getVacancy: builder.query<HhVacancyDetail, string>({
+      query: (id) => `/vacancies/${id}`,
+      transformResponse: (data: any) => {
+        console.log('=== API RESPONSE ===');
+        console.log('Full API response:', data);
+        console.log('Description field:', data.description);
+        console.log('Snippet field:', data.snippet);
+        console.log('==================');
+        return {
+          ...data,
+          url: data.alternate_url,
+        } as HhVacancyDetail;
+      },
+    }),
   }),
 });
 
-export const { useGetVacanciesQuery } = api;
+export const { useGetVacanciesQuery, useGetVacancyQuery } = api;
 
 

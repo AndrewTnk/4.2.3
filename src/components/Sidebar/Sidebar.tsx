@@ -19,12 +19,13 @@ import {
   removeAvailableSkill,
   setNewSkill,
   commitNewSkill,
+  toggleSkill,
 } from '../../store/filtersSlice';
 import map from '../../assets/map.svg';
 
 export function Sidebar() {
   const dispatch = useAppDispatch();
-  const { availableSkills, newSkill, areaId } = useAppSelector(s => s.filters);
+  const { availableSkills, selectedSkills, newSkill, areaId } = useAppSelector(s => s.filters);
 
   const addSkill = () => {
     dispatch(commitNewSkill());
@@ -59,12 +60,16 @@ export function Sidebar() {
           <PillsInput variant="unstyled">
             <Pill.Group>
               {availableSkills.map(skill => {
+                const isSelected = selectedSkills.includes(skill);
                 return (
                   <Pill
                     key={skill}
                     size="sm"
-                    variant="default"
+                    variant={isSelected ? "filled" : "default"}
+                    color={isSelected ? "blue" : undefined}
                     className={classes.skillBadge}
+                    onClick={() => dispatch(toggleSkill(skill))}
+                    style={{ cursor: 'pointer' }}
                   >
                     <Text className={classes.pillContent}>{skill}</Text>
                     <CloseButton

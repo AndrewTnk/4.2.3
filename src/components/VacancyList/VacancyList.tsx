@@ -69,6 +69,7 @@ export function VacancyList() {
           (data?.items ?? []).map((vacancy, index) => (
             <div key={vacancy.id}>
               <VacancyCard
+                id={vacancy.id}
                 title={vacancy.name}
                 salary={formatSalary(vacancy.salary)}
                 experience={vacancy.experience?.name ?? 'Опыт не указан'}
